@@ -1,78 +1,112 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyBookList</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input {
+      padding: 5px;
+      margin-right: 10px;
+    }
+    .delete {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .delete:hover {
+      background-color: darkred;
+    }
+    table {
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-	<h1 style="text-align:center">My<span style="color:blue;">Book</span>List</h1>
+  <h1>MyBookList</h1>
 
-    <div class="form-group">
-        <form onsubmit="add(event)" 
-			  style="display:flex;flex-direction:column;gap:5px;justify-content:center;align-items:flex-start">
-			
-			<label for="title">Title</label>
-			<input style="width:90vw" id="title" type="text" placeholder="">
-			
-			<label for="author">Author</label>
-			<input style="width:90vw" id="author" type="text" placeholder="">
-			
-			<label for="isbn">ISBN#</label>
-			<input style="width:90vw" id="isbn" type="text" placeholder="">
+  <!-- Form Section -->
+  <div class="form-group">
+    <input type="text" id="title" placeholder="Book Title">
+    <input type="text" id="author" placeholder="Author">
+    <input type="text" id="isbn" placeholder="ISBN #">
+    <button id="submit">Add Book</button>
+  </div>
 
-			<button type="submit"
-				style="background-color:blue;color:white;border:none;border-radius:20px;padding:5px 20px"
-				id="submit">Add Book</button>
-		</form>
-	</div>
+  <!-- Table Section -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>ISBN#</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="book-list">
+      <!-- Rows will be added here dynamically -->
+    </tbody>
+  </table>
 
-	<div>
-		<table class="table table-striped" border="1" cellspacing="0" cellpadding="10" style="width:95vw;margin-top:20px">
-			<thead>
-				<tr>
-					<th>Title</th>
-					<th>Author</th>
-					<th>ISBN#</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody id="book-list"></tbody>
-		</table>
-	</div>
+  <script>
+    // Select elements
+    const submitBtn = document.getElementById("submit");
+    const bookList = document.getElementById("book-list");
 
-    <script>
-		const bookList = document.getElementById("book-list");
+    // Add Book
+    submitBtn.addEventListener("click", function () {
+      const title = document.getElementById("title").value;
+      const author = document.getElementById("author").value;
+      const isbn = document.getElementById("isbn").value;
 
-		function add(e) {
-			e.preventDefault(); // stop form from refreshing page
+      if (title === "" || author === "" || isbn === "") {
+        alert("Please fill all fields!");
+        return;
+      }
 
-			let title = document.getElementById("title").value.trim();
-			let author = document.getElementById("author").value.trim();
-			let isbn = document.getElementById("isbn").value.trim();
+      // Create a new row
+      const row = document.createElement("tr");
 
-			if(title && author && isbn){
-				let row = document.createElement("tr");
-				row.innerHTML = `
-					<td>${title}</td>
-					<td>${author}</td>
-					<td>${isbn}</td>
-					<td><button class="button" onclick="removeBook(this)" style="background:red;color:white;border:none;padding:5px 10px;border-radius:5px">Clear</button></td>
-				`;
-				bookList.appendChild(row);
+      row.innerHTML = `
+        <td>${title}</td>
+        <td>${author}</td>
+        <td>${isbn}</td>
+        <td><button class="delete">Clear</button></td>
+      `;
 
-				// clear input fields
-				document.getElementById("title").value = "";
-				document.getElementById("author").value = "";
-				document.getElementById("isbn").value = "";
-			} else {
-				alert("Enter all the details");
-			}
-		}
+      bookList.appendChild(row);
 
-		function removeBook(btn){
-			btn.parentElement.parentElement.remove();
-		}
-    </script>
+      // Clear inputs after adding
+      document.getElementById("title").value = "";
+      document.getElementById("author").value = "";
+      document.getElementById("isbn").value = "";
+    });
+
+    // Delete Book (Event Delegation)
+    bookList.addEventListener("click", function (e) {
+      if (e.target.classList.contains("delete")) {
+        e.target.parentElement.parentElement.remove();
+      }
+    });
+  </script>
 
 </body>
 </html>
